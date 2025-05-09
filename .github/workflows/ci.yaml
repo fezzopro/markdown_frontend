@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run Eslint
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
+
+  check-node-modules:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check for node_modules
+        run: |
+          if [ -d "node_modules" ]; then
+            echo "Error: node_modules directory should not be committed"
+            exit 1
+          fi
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [test, check-node-modules]
+    strategy:
+      matrix:
+        node-version: [20.18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+      - name: Build
+        run: yarn build
+
+  deploy-production:
+    needs: [build, test]
+
+    if: github.ref == 'ref/heads/main'
+    uses: ./.github/workflows/vercel_production.yaml
+    secrets: inherit
+
+  deploy-staging:
+    needs: [build, test]
+    uses: ./.github/workflows/vercel_preview.yaml
+    secrets: inherit
