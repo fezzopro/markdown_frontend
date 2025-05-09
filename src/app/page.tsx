@@ -25,7 +25,11 @@ function hello() {
 [Visit GitHub](https://github.com/fezzopro/markdown_frontend)`);
 
   const handleExport = () => {
-    const input = document.getElementById('preview');
+    const input: HTMLElement | null = document.getElementById('preview');
+    if (!input) {
+    console.error("Element with ID 'preview' not found.");
+    return;
+  }
     html2canvas(input, { scale: 2 }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
@@ -52,18 +56,25 @@ function hello() {
   const handleCopy = async () => {
     const preview = document.getElementById('preview');
     const range = document.createRange();
-    range.selectNode(preview);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    window.getSelection().removeAllRanges();
+    if (preview) {
+      range.selectNode(preview);
+    }
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('copy');
+      selection.removeAllRanges();
+    }
     
     // Show copied notification
     const copyBtn = document.getElementById('copy-btn');
-    copyBtn.textContent = 'Copied!';
-    setTimeout(() => {
-      copyBtn.textContent = 'Copy';
-    }, 2000);
+    if(copyBtn) {
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy';
+      }, 2000);
+    }
   };
 
   return (

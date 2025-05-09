@@ -1,4 +1,4 @@
-# BK Farmer Frontend
+# Markdown Frontend
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
@@ -15,8 +15,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/bk-farmer-frontend.git
-   cd bk-farmer-frontend
+   git clone https://github.com/your-username/markdown_frontend.git
+   cd markdown_frontend
    ```
 
 2. Install dependencies:
@@ -48,10 +48,10 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ### Running with Docker
   1. Build the Docker image:
       ```
-        docker build -t bk-farmer-frontend .
+        docker build -t markdown_frontend .
       ```
   
   2. Run the Docker container:
       ```
-        docker run -p 3000:3000 bk-farmer-frontend
+        docker run -p 3000:3000 markdown_frontend
       ```
